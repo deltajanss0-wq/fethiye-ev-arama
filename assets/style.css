@@ -1,0 +1,237 @@
+/* ── Google Font ─────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+/* ── Global reset ────────────────────────────────────────────────────────── */
+html, body, [class*="css"] {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+/* Streamlit default padding azalt - mobil için */
+.main .block-container {
+    padding-top: 0.5rem !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    padding-bottom: 2rem !important;
+    max-width: 100% !important;
+}
+
+/* Header ve footer gizle */
+#MainMenu, footer, header { visibility: hidden; }
+.stDeployButton { display: none; }
+
+/* ── Topbar ──────────────────────────────────────────────────────────────── */
+.topbar {
+    background: linear-gradient(135deg, #E8650A 0%, #C04E00 100%);
+    padding: 0.9rem 1rem;
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.topbar-title {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+}
+.live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4ade80;
+    display: inline-block;
+    animation: pulse-anim 1.5s infinite;
+}
+@keyframes pulse-anim {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+}
+.badge-site {
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+/* ── İstatistik kartları ─────────────────────────────────────────────────── */
+.stat-card {
+    background: #FFF3EC;
+    border: 1px solid #FDDCC4;
+    border-radius: 10px;
+    padding: 0.75rem 0.5rem;
+    text-align: center;
+    margin-bottom: 0;
+}
+.stat-icon { font-size: 18px; line-height: 1; }
+.stat-num {
+    font-size: 20px;
+    font-weight: 700;
+    color: #E8650A;
+    margin: 2px 0;
+    line-height: 1.2;
+}
+.stat-lbl {
+    font-size: 10px;
+    color: #888;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+/* ── Sahibinden butonu ───────────────────────────────────────────────────── */
+.btn-sahibinden {
+    display: inline-block;
+    background: #E8650A;
+    color: #fff !important;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none !important;
+    margin-top: 4px;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+    transition: background 0.15s;
+}
+.btn-sahibinden:hover { background: #C04E00; }
+
+/* ── İlan kart içeriği ───────────────────────────────────────────────────── */
+.card-body {
+    background: #fff;
+    border: 1px solid #f0ebe6;
+    border-radius: 0 0 10px 10px;
+    padding: 0.75rem 0.85rem 0.5rem;
+    margin-top: -4px;
+}
+.card-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+.price {
+    font-size: 20px;
+    font-weight: 700;
+    color: #E8650A;
+}
+.price-sub {
+    font-size: 12px;
+    color: #aaa;
+    font-weight: 400;
+}
+.badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+.badge-bolge {
+    background: #EFF6FF;
+    color: #1D4ED8;
+    font-size: 10px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+.badge-esyali {
+    background: #F0FDF4;
+    color: #166534;
+    font-size: 10px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+.badge-esyasiz {
+    background: #FFF7ED;
+    color: #9A3412;
+    font-size: 10px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+.badge-new {
+    background: #FEF3C7;
+    color: #92400E;
+    font-size: 10px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+.card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 5px;
+    line-height: 1.4;
+}
+.card-meta {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+/* ── Bölücü çizgi ────────────────────────────────────────────────────────── */
+.card-divider {
+    border: none;
+    border-top: 1px solid #f0ebe6;
+    margin: 1rem 0;
+}
+
+/* ── Sonuç yok ────────────────────────────────────────────────────────────── */
+.no-result {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #888;
+    font-size: 15px;
+    line-height: 1.8;
+    background: #fafaf8;
+    border-radius: 12px;
+    border: 1px dashed #e0dbd6;
+}
+
+/* ── Bölüm etiketi ────────────────────────────────────────────────────────── */
+.section-label {
+    font-size: 12px;
+    color: #999;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    padding: 0 2px;
+}
+
+/* ── Streamlit buton özelleştirme ─────────────────────────────────────────── */
+.stButton > button {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+}
+
+/* Navigasyon menü düzeltme */
+.nav-link { font-size: 13px !important; }
+
+/* Slider renk */
+.stSlider [data-baseweb="slider"] div[role="slider"] {
+    background-color: #E8650A !important;
+}
+
+/* ── Mobil medya sorguları ─────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .main .block-container {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+    .topbar-title { font-size: 14px; }
+    .stat-num { font-size: 17px; }
+    .price { font-size: 18px; }
+}
