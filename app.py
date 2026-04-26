@@ -3,6 +3,7 @@ from duckduckgo_search import DDGS
 import google.generativeai as genai
 
 # ── YAPAY ZEKA AYARLARI ────────────────────────────────────────────────────────
+# Not: Hızlı test için API anahtarı eklendi.
 GOOGLE_API_KEY = "AIzaSyDss_TBJ75iglS3oi43QBe-j1Hk1dNmqcs"
 genai.configure(api_key=GOOGLE_API_KEY)
 
@@ -11,14 +12,14 @@ def analyze_snippet_with_ai(title, snippet):
         model = genai.GenerativeModel('gemini-1.5-flash')
         prompt = f"""
         Aşağıdaki emlak ilanı başlığını ve kısa açıklamasını analiz et. 
-        Zeynep ve patron için en önemli 2-3 maddeyi (fiyat, konum avantajı, kiralama süresi vb.) çıkar.
+        Zeynep ve ajans için en önemli 2-3 maddeyi (fiyat, konum avantajı, kiralama süresi vb.) çıkar.
         Başlık: {title}
         Açıklama: {snippet}
         """
         response = model.generate_content(prompt)
         return response.text
-    except:
-        return "AI analizi şu an yapılamıyor."
+    except Exception as e:
+        return f"⚠️ AI analizi şu an yapılamıyor: {e}"
 
 # ── SAYFA AYARLARI VE TASARIM ──────────────────────────────────────────────────
 st.set_page_config(page_title="Fethiye Emlak Radarı", page_icon="🏡", layout="centered")
@@ -83,6 +84,8 @@ st.markdown("""
         border-radius: 20px;
         font-size: 12px;
         font-weight: 600;
+        display: inline-block;
+        margin-bottom: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -96,53 +99,56 @@ col1, col2 = st.columns([3, 1])
 with col1:
     target_region = st.selectbox("Bölge Seçiniz:", ["Çalış", "Çiftlik", "Kargı"], index=0)
 with col2:
-    st.write("") # Boşluk
+    st.write("") 
     st.write("")
     search_btn = st.button("🔍 Ara", use_container_width=True)
 
 # ── İLANLARI GETİR VE LİSTELE ──────────────────────────────────────────────────
 if search_btn or 'results' in st.session_state:
     if search_btn:
-        with st.spinner(f"{target_region} ilanları taranıyor..."):
-            query = f'site:sahibinden.com "fethiye" "{target_region.lower()}" "kiralık"'
+        with st.spinner(f"{target_region} ilanları web'de taranıyor..."):
+            # ESNEK ARAMA SORGUSU: Daha fazla sonuç bulması için kısıtlamalar kaldırıldı
+            query = f'fethiye {target_region.lower()} kiralık ev daire'
             try:
-                st.session_state.results = DDGS().text(query, max_results=8)
+                # Maksimum 10 sonuç çekecek şekilde ayarlandı
+                st.session_state.results = DDGS().text(query, max_results=10)
             except Exception as e:
-                st.error("Arama motoru şu an meşgul, lütfen 1 dakika bekleyip tekrar basın.")
+                st.error("Arama motoru şu an meşgul, lütfen 10 saniye bekleyip tekrar basın.")
                 st.session_state.results = []
 
     if st.session_state.get('results'):
-        st.write(f"📌 {len(st.session_state.results)} ilan bulundu.")
+        st.write(f"📌 **{len(st.session_state.results)} adet** potansiyel ilan/sayfa bulundu.")
         
         for i, res in enumerate(st.session_state.results):
             # Kart Yapısı
             with st.container():
-                # Temsili Resim (Web araması resim URL'si vermediği için şık bir placeholder kullanıyoruz)
+                # Temsili Resim
                 placeholder_img = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80"
                 
                 st.markdown(f"""
                 <div class="listing-card">
                     <img src="{placeholder_img}" class="card-image">
                     <div class="card-content">
-                        <div class="card-tag">Sahibinden.com | {target_region}</div>
-                        <div class="card-title">{res['title']}</div>
-                        <div class="card-desc">{res['body']}</div>
+                        <div class="card-tag">Web Radarı | {target_region}</div>
+                        <div class="card-title">{res.get('title', 'Başlık Yok')}</div>
+                        <div class="card-desc">{res.get('body', 'Açıklama bulunamadı...')}</div>
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
                 
                 c1, c2 = st.columns(2)
                 with c1:
-                    st.link_button("🚀 İlana Git", res['href'], use_container_width=True)
+                    st.link_button("🚀 Orijinal İlana/Sayfaya Git", res.get('href', '#'), use_container_width=True)
                 with c2:
-                    if st.button("🤖 AI Analiz", key=f"ai_{i}", use_container_width=True):
+                    if st.button("🤖 AI Analizi İste", key=f"ai_{i}", use_container_width=True):
                         with st.spinner("Delta AI inceliyor..."):
-                            analiz = analyze_snippet_with_ai(res['title'], res['body'])
+                            analiz = analyze_snippet_with_ai(res.get('title', ''), res.get('body', ''))
                             st.success(analiz)
                 st.markdown("<br>", unsafe_allow_html=True)
     else:
-        st.warning("Şu an yeni ilan indekslenmemiş görünüyor. Daha sonra tekrar deneyin.")
+        if search_btn:
+            st.warning("Şu an arama motorlarında bu bölge için yeni bir indeks bulunamadı. Lütfen daha sonra tekrar deneyin.")
 
 # ── FOOTER ─────────────────────────────────────────────────────────────────────
 st.divider()
-st.info("💡 Not: İlanların resimleri arama sonuçlarında ham olarak bulunmadığı için örnek görseller kullanılmıştır. Detaylar için 'İlana Git' butonunu kullanın.")
+st.info("💡 Not: İlanların resimleri arama sonuçlarında ham olarak bulunmadığı için örnek görseller kullanılmıştır. Detaylar için orijinal sayfaya gidin.")
