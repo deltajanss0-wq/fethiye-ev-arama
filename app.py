@@ -5,14 +5,17 @@ import pandas as pd
 st.set_page_config(
     page_title="Fethiye Ev Arama",
     page_icon="🏡",
-    layout="wide",
+    layout="centered",  # Resimlerin devasa çıkmaması için 'centered' yaptık 
     initial_sidebar_state="collapsed",
     menu_items={"Get Help": None, "Report a bug": None, "About": None},
 )
 
 # ── CSS ────────────────────────────────────────────────────────────────────────
-with open("assets/style.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+try:
+    with open("assets/style.css") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+except FileNotFoundError:
+    st.warning("Uyarı: 'assets/style.css' dosyası bulunamadı. Tasarım standart görünebilir.")
 
 # ── Veri ───────────────────────────────────────────────────────────────────────
 from data.listings import get_listings
@@ -54,24 +57,27 @@ def render_card(row):
         st.caption(f"{idx+1}/{len(imgs)}")
 
     fiyat_fmt = f"{row['fiyat']:,.0f}".replace(",", ".")
-    st.markdown(
-        f"""<div class="card-body">
-            <div class="card-top-row">
-                <div class="price">₺{fiyat_fmt}<span class='price-sub'>/ay</span></div>
-                {new_badge}
-            </div>
-            <div class="badges">
-                <span class="badge-bolge">{row['bolge']}</span>
-                <span class="{esya_cls}">{row['esya']}</span>
-            </div>
-            <div class="card-title">{row['baslik']}</div>
-            <div class="card-meta">
-                🛏 {row['oda']} &nbsp;|&nbsp; 📐 {row['m2']} m²
-                &nbsp;|&nbsp; 🏢 {row['kat']}. Kat
-            </div>
-        </div>""",
-        unsafe_allow_html=True,
-    )
+    
+    # KRİTİK DÜZELTME: HTML etiketlerinin yanlarda kod olarak görünmemesi için 
+    # string içindeki girintileri (boşlukları) tamamen kaldırdık. 
+    card_html = f"""
+<div class="card-body">
+<div class="card-top-row">
+<div class="price">₺{fiyat_fmt}<span class='price-sub'>/ay</span></div>
+{new_badge}
+</div>
+<div class="badges">
+<span class="badge-bolge">{row['bolge']}</span>
+<span class="{esya_cls}">{row['esya']}</span>
+</div>
+<div class="card-title">{row['baslik']}</div>
+<div class="card-meta">
+🛏 {row['oda']} &nbsp;|&nbsp; 📐 {row['m2']} m²
+&nbsp;|&nbsp; 🏢 {row['kat']}. Kat
+</div>
+</div>"""
+    
+    st.markdown(card_html, unsafe_allow_html=True)
 
     btn1, btn2, btn3 = st.columns([3, 2, 2])
     with btn1:
